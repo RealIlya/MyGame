@@ -17,12 +17,12 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.Iterator;
 
+import javax.swing.DesktopManager;
 
 public class MyGdxGame extends ApplicationAdapter {
 	private Texture dropImage;
 	private Texture bucketImage;
 	private Texture anvilImage;
-	private Texture diedImage;
 	private Sound dropSound;
 	private Sound loseSound;
 	private Music rainMusic;
@@ -41,8 +41,6 @@ public class MyGdxGame extends ApplicationAdapter {
 		bucketImage = new Texture(Gdx.files.internal("bucket.png"));
 		anvilImage = new Texture(Gdx.files.internal("anvil.png"));
 
-		diedImage = new Texture(Gdx.files.internal("died.png"));
-
 		dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
 		loseSound = Gdx.audio.newSound(Gdx.files.internal("you_lose.wav"));
 		rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
@@ -60,17 +58,12 @@ public class MyGdxGame extends ApplicationAdapter {
 		bucket.y = 20;
 		bucket.width = 64;
 		bucket.height = 64;
-		
+
 		raindrops = new Array<Rectangle>();
 		spawnRaindrop();
 
 		anvils = new Array<Rectangle>();
 		spawnAnvil();
-
-		diedMenu = new Array<Rectangle>();
-		spawnDied();
-
-
 	}
 
 	private void spawnRaindrop() {
@@ -91,15 +84,6 @@ public class MyGdxGame extends ApplicationAdapter {
 		anvil.height = 64;
 		anvils.add(anvil); // добавляем параметры новой наковальни в массив
 		lastAnvilTime = TimeUtils.nanoTime();
-	}
-
-	private void spawnDied() {
-		Rectangle died = new Rectangle();
-		died.x = 800 - 64;
-		died.y = 480;
-		died.width = 64;
-		died.height = 64;
-		diedMenu.add(died);
 	}
 
 
@@ -182,8 +166,9 @@ public class MyGdxGame extends ApplicationAdapter {
 			if (anvil_iter.overlaps(bucket)) {
 				loseSound.play();
 				iter.remove();
-				batch.draw(diedImage, died.x, died.y);
-				batch.end();
+				bucketImage.dispose();
+				bucket.setPosition(1000, 10000000);
+                rainMusic.dispose();
 			}
 		}
 	}
